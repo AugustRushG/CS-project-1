@@ -1,0 +1,22 @@
+
+IDIR =../include
+CC=gcc
+CFLAGS=-I.
+
+ODIR=obj
+LDIR =../lib
+
+LIBS=-lm
+
+DEPS = deadLockFunc.h taskFunc.h
+
+OBJ = detect.o deadLockFunc.o task12Func.o
+
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+detect: $(OBJ)
+	$(CC) -Wall -o $@ $^ $(CFLAGS)
+
+clean:
+	rm -f *.o detect
