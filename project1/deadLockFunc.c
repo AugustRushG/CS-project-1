@@ -8,6 +8,7 @@
 /**
  *task 3, detect deadlock by check if the linked list have a circle
  * task 4 and 5 are just improved version of task 3
+ *
  */
 
 
@@ -83,6 +84,8 @@ int* task5(int** process,int row, int column, int* terminateSize){
     int count=0;
     int actualLsSize=0;
 
+    int position=0;
+
 
     for (int i=0;i<row;i++){
         current= malloc(sizeof (struct Node));
@@ -111,44 +114,35 @@ int* task5(int** process,int row, int column, int* terminateSize){
 
                 if (current->dealing==copy->waiting){
                     temp->next=current;
+                    //set this node's waitingList to 0 indicate there is no file that this node need is dealing
                     copy->waitingInTheList=0;
                 }
                 if (current->waiting==copy->dealing ){
-
                     current->next=copy;
 
-                    if (actualLsSize-k<=2 && copy->waitingInTheList==0){
-
+                    //if search is complete before 2 steps, just this node, > 2 the next node to terminate
+                    if (position-k<=2 && copy->waitingInTheList==0){
+                        //printf("<=2 position is at %d k=%d\n",position,k);
                         terminateArr[terminateCount]=copy->processNumber;
                         terminateCount++;
                         deleteLl(&copy,copy->processNumber);
                         actualLsSize--;
-                    } else if (actualLsSize-k>2 && copy->waitingInTheList==0){
-
+                        position--;
+                    } else if (position-k>2 && copy->waitingInTheList==0){
+                        //printf(">2 position is at %d k=%d\n",position,k);
                         terminateArr[terminateCount]=copy->next->processNumber;
                         terminateCount++;
                         deleteLl(&copy,copy->next->processNumber);
                         actualLsSize--;
+                        position--;
                     }
-
-
                 }
-
-
                 copy=copy->next;
-
             }
-
-
         }
-
-
         count++;
         actualLsSize++;
-
-
-
-
+        position++;
     }
 
     free(current);
