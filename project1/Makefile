@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-Wall
 LDFLAGS=-lpthread
 EXE_PHASE1=detect
-OBJ_PHASE1=deadLockFunc.o task12Func.o
+OBJ_PHASE1=deadLockFunc.o task12Func.o challengeTask.o
 
 all: $(EXE_PHASE1)
 

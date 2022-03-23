@@ -1,5 +1,3 @@
-#include <assert.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "deadLockFunc.h"
@@ -13,7 +11,7 @@
 
 
 
-
+//task 3
 int task3(int** process,int row, int* processID){
     struct Node* head=NULL;
     struct Node* temp=NULL;
@@ -70,16 +68,17 @@ int task3(int** process,int row, int* processID){
     return 1;
 }
 
-
+//task 4 and 5 together
 int* task5(int** process,int row, int column, int* terminateSize){
     struct Node* head=NULL;
     struct Node* temp=NULL;
     struct Node* current=NULL;
     struct Node* copy=NULL;
+    struct Node* copy1=NULL;
+
 
     int* terminateArr= malloc(row-1);
     int terminateCount=0;
-    //int terminate=0;
 
     int count=0;
     int actualLsSize=0;
@@ -106,7 +105,6 @@ int* task5(int** process,int row, int column, int* terminateSize){
 
         else{
             copy=head;
-
             temp->next=current;
             temp=current;
 
@@ -121,7 +119,7 @@ int* task5(int** process,int row, int column, int* terminateSize){
                     current->next=copy;
 
                     //if search is complete before 2 steps, just this node, > 2 the next node to terminate
-                    if (position-k<=2 && copy->waitingInTheList==0){
+                    if (position-k<=2 && copy->waitingInTheList==0 ){
                         //printf("<=2 position is at %d k=%d\n",position,k);
                         terminateArr[terminateCount]=copy->processNumber;
                         terminateCount++;
@@ -130,11 +128,19 @@ int* task5(int** process,int row, int column, int* terminateSize){
                         position--;
                     } else if (position-k>2 && copy->waitingInTheList==0){
                         //printf(">2 position is at %d k=%d\n",position,k);
-                        terminateArr[terminateCount]=copy->next->processNumber;
-                        terminateCount++;
-                        deleteLl(&copy,copy->next->processNumber);
-                        actualLsSize--;
-                        position--;
+                        copy1=copy->next;
+                        for (int h=0;h<actualLsSize-1;h++){
+                            if (copy1->dealing==copy->waiting){
+                                terminateArr[terminateCount]=copy1->processNumber;
+                                terminateCount++;
+                                deleteLl(&copy,copy1->processNumber);
+                                actualLsSize--;
+                                position--;
+                                break;
+                            }
+                            copy1=copy1->next;
+                        }
+
                     }
                 }
                 copy=copy->next;
@@ -144,7 +150,6 @@ int* task5(int** process,int row, int column, int* terminateSize){
         actualLsSize++;
         position++;
     }
-
     free(current);
     current=NULL;
     *terminateSize=terminateCount;
@@ -174,40 +179,15 @@ void deleteLl(struct Node** head_ref, int key){
     free(temp); // Free memory
 }
 
-//push into the list
-void push(struct Node** head_ref, int processID, int dealing, int waiting)
-{
-    struct Node* new_node = malloc(sizeof(struct Node));
-    new_node->processNumber = processID;
-    new_node->dealing=dealing;
-    new_node->waiting=waiting;
-    new_node->next = (*head_ref);
-    (*head_ref) = new_node;
-}
-
 //print list
 void printList(struct Node* node)
 {
     while (node != NULL) {
-        printf("ID %d %d %d\n", node->processNumber,node->dealing,node->waiting);
+        printf("time: %d ID %d %d %d\n",node->time, node->processNumber,node->dealing,node->waiting);
         node = node->next;
     }
 }
 
-//detect loop
-int detectLoop(struct Node* list, int* terminate){
-    struct Node *slow_p = list, *fast_p = list;
-
-    while (slow_p && fast_p && fast_p->next) {
-        slow_p = slow_p->next;
-        fast_p = fast_p->next->next;
-        if (slow_p == fast_p) {
-            *terminate=fast_p->processNumber;
-            return 1;
-        }
-    }
-    return 0;
-}
 
 
 

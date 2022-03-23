@@ -1,0 +1,1 @@
+The idea is to rearrange the linked list first, put two processors that need the same file as far as it can. Then separate it into groups, to calculate time. Add one between each group.

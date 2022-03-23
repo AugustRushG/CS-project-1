@@ -1,13 +1,13 @@
 #include <assert.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "deadLockFunc.h"
 #include "task12Func.h"
+#include "challengeTask.h"
 
 #define INITIAL 5
 
-
+//main function
 int main(int argc, char** argv) {
 
     int eFlag=0;
@@ -34,9 +34,10 @@ int main(int argc, char** argv) {
                 abort ();
         }
 
-    //printf("Opening file %s\n",fileName);
     FILE*fptr=fopen(fileName,"r");
-    assert(fileName!=NULL);//assert if no file is reading
+
+    //assert if no file is reading
+    assert(fileName!=NULL);
 
     //creating a 2d array
     int** process=NULL;
@@ -46,7 +47,6 @@ int main(int argc, char** argv) {
     int processCount= task1(fptr,&fileNumber);
     processCount+=1;
     fileNumber-=1;
-    //printf("processCount is %d fileCount is %d \n",processCount,fileNumber);
 
     //reset file
     fseek(fptr,0,SEEK_SET);
@@ -80,12 +80,13 @@ int main(int argc, char** argv) {
 
         printf("Processes %d\n",processCount);
         printf("Files %d\n",fileNumber);
+
         int positionID=0;
         int detectDeadlock= task3(process,row,&positionID);
 
         int terminateSize=0;
 
-        if (detectDeadlock==0&&eFlag==0){
+        if (detectDeadlock==0&&eFlag==0&&cFlag==0){
             printf("Deadlock detected\n");
 
             int* terminateArr= task5(process,row,realColumn,&terminateSize);
@@ -105,10 +106,15 @@ int main(int argc, char** argv) {
 
     if (eFlag==1){
         int time=executionTime(process,realColumn,row);
+        if (row==0){
+            time=0;
+        }
         printf("Execution time %d\n",time);
     }
 
-    if(cFlag==1){};
+    if(cFlag==1){
+        challenge(process,row);
+    };
 
     //cleanup
     for(int i=0;i<processCount;i++){
@@ -120,8 +126,8 @@ int main(int argc, char** argv) {
     process=NULL;
 
     fclose(fptr);
-
     return 0;
 }
+
 
 
