@@ -1,6 +1,7 @@
 #include "stdlib.h"
 #include "deadLockFunc.h"
 #include "challengeTask.h"
+#include "stdio.h"
 
 /**
 * for challenge task my idea is to check the first process what files it need, record them, compare to the next one
@@ -29,6 +30,7 @@ void challenge(int** process,int row){
         current->waiting=process[i][2];
         current->processNumber=process[i][0];
         current->time=-1;
+        current->next=NULL;
 
         if (count==0){
             head=temp=current;
@@ -48,32 +50,6 @@ void challenge(int** process,int row){
    //calculate time
     calculateTime(&head);
    freeList(head);
-}
-
-//append node to the last node in the list
-void append(struct Node** head_ref, int processID, int dealing, int waiting)
-{
-    struct Node* new_node =malloc(sizeof(struct Node));
-    struct Node *last = *head_ref;
-
-    new_node->processNumber  = processID;
-    new_node->waiting=waiting;
-    new_node->dealing=dealing;
-    new_node->next = NULL;
-
-    if (*head_ref == NULL)
-    {
-        *head_ref = new_node;
-        return;
-    }
-
-    //iterate through to the end
-    while (last->next != NULL) {
-        last = last->next;
-    }
-
-    last->next = new_node;
-    return;
 }
 
 //free all memories in the list
@@ -160,7 +136,8 @@ void calculateTime(struct Node** head_ref){
         copy=copy->next;
 
     }
-    printList(*head_ref);
+    int simTime=printList(*head_ref);
+    printf("Execution time %d\n",simTime);
 
 }
 
