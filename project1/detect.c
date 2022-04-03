@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
 
     }
 
-    if (eFlag==1){
+    if(eFlag==1){
         int time=executionTime(process,realColumn,row);
         if (row==0){
             time=0;
